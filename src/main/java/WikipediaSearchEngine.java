@@ -28,18 +28,19 @@ public class WikipediaSearchEngine {
     }
 
     public void search(String searchTerm) {
-        ArrayList<HadoopPageNode> pagesThatMatches = new ArrayList<HadoopPageNode>();
+        Set<HadoopPageNode> pagesThatMatches = new TreeSet<HadoopPageNode>();
 
         for (String term : searchTerm.toLowerCase().trim().split(" ")) {
             pagesThatMatches.addAll(this.searchSubTerm(term));
 
             for (String word : wordDocIdFreqMap.keySet()) {
                 if (word.contains(term)) {
-                    Iterator<String> ite = wordDocIdFreqMap.get(word).keySet().iterator();
-                    String docID = ite.next();
+                    HashMap<String, Integer> docFreq = wordDocIdFreqMap.get(word);
+                    String docID = getHigestFreqDocID(docFreq);
+                    int fre = wordDocIdFreqMap.get(word).get(docID);
                     String title = this.getTitle(docID);
                     HadoopPageNode page = new HadoopPageNode(docID, title);
-                    page.setPageRankValue(this.getPageRank(docID));
+                    page.setPageRankValue(this.getPageRank(docID)+fre);
                     pagesThatMatches.add(page);
                 }
             }
@@ -48,7 +49,21 @@ public class WikipediaSearchEngine {
         printSearchResults(this.getTopTenPages(pagesThatMatches));
     }
 
-    private void printSearchResults(Set<String> topTenPages) {
+    private String getHigestFreqDocID(HashMap<String, Integer> docWithFreq) {
+        int maxSoFar = 0;
+        String id = null;
+        for (String docID : docWithFreq.keySet()) {
+            int docFreq = docWithFreq.get(docID);
+            if (maxSoFar <= docFreq) {
+                maxSoFar = docFreq;
+                id = docID;
+            }
+        }
+
+        return id;
+    }
+
+    private void printSearchResults(ArrayList<String> topTenPages) {
         if (topTenPages.size() == 0) {
             System.out.println(this.NO_PAGE_FOUND_MESSAGE);
             return;
@@ -68,22 +83,20 @@ public class WikipediaSearchEngine {
         for (String title : this.titlePageMap.keySet())
             if (title.contains(subSearchTerm))
                 matchedPages.add(this.titlePageMap.get(title));
-
         return matchedPages;
     }
 
-    private Set<String> getTopTenPages(ArrayList<HadoopPageNode> matchedPages) {
-        Set<String> topTenPages = new HashSet<String>();
-        sort(matchedPages);
-        int counter = 0;
-        for (HadoopPageNode page : matchedPages) {
-            if (counter <= 9) {
-                topTenPages.add(page.getTitle());
+    private ArrayList<String> getTopTenPages(Set<HadoopPageNode> matchedPages) {
+        ArrayList<String> topTenPages = new ArrayList<String>();
+        Object[] pages = matchedPages.toArray();
+        Arrays.sort(pages);
+        for (int i=pages.length-1; i>=0; i--) {
+            if (topTenPages.size() <= 9) {
+                HadoopPageNode p = (HadoopPageNode) pages[i];
+                topTenPages.add(p.getTitle());
             } else
                 break;
-            counter++;
         }
-
         return topTenPages;
     }
 
@@ -109,8 +122,6 @@ public class WikipediaSearchEngine {
 
         this.readInInvertedIndexResult("/part-r-00000.txt" );
         this.readInInvertedIndexResult("/part-r-00001.txt" );
-
-
     }
 
     private void readInInvertedIndexResult(String file) throws IOException, URISyntaxException {
