@@ -1,4 +1,4 @@
-# WikipediaSparkAnalysis
+# Wikipedia Hadoop Search Engine
 
 ##Overview
 This coursework will implement a text search service for a large dataset such as the English Wikipedia. The project will develop a prototype system that starting from a search term (single word), outputs a ranked list of result pages that are relevant for that.
