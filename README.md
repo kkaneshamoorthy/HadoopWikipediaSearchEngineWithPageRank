@@ -22,5 +22,5 @@ The English wikipedia dataset is suggested as the standard input for the coursew
 Main.java has a demo
 
 ##Running
- WikipediaSearchEngine wse = new WikipediaSearchEngine();
+ WikipediaSearchEngine wse = new WikipediaSearchEngine(); <br/>
  wse.search(searchTerm); //prints out the top ten results
