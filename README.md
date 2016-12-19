@@ -9,7 +9,7 @@ The English wikipedia dataset is suggested as the standard input for the coursew
 
 ##Design decisions
 
-* External libraries: SAX parser, XmlInputFormat
+* External libraries: SAX parser, XmlInputFormat (Mahout)
 * Apache Hadoop - Map/Reduce
 * Inverted Index
 * PageRank
