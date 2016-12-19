@@ -7,20 +7,20 @@ The main aim of the coursework is to design algorithms in a sensible way for dat
 
 The English wikipedia dataset is suggested as the standard input for the coursework. Optionally, alternative datasets such as a corpus of Stackoverflow posts can be selected after consultation with the module organiser. 
 
-##Tasks
-* Inverted Index - idenity all candidate results for each different search term:
-* Ranking Metric/function - content-based analysis/PageRank algorithm
-* Top 10 filtering component that retrievves the most relevant results 
-* Unit tests
-
 ##Design decisions
 
-* External libraries only allowed for data parsing and formatting(i.e. XML Parser)
-* Apache Spark/Hadoop - Map/Reduce
-* GraphX
+* External libraries: SAX parser, XmlInputFormat
+* Apache Hadoop - Map/Reduce
+* Inverted Index
+* PageRank
 
 ##Additional
 
-* PageRank
-* Text-based frequency analysis
 * Search containing more than one search term
+
+##Demo
+Main.java has a demo
+
+##Running
+ WikipediaSearchEngine wse = new WikipediaSearchEngine();
+ wse.search(searchTerm); //prints out the top ten results
